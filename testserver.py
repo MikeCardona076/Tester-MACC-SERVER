@@ -6,8 +6,9 @@ from kivy.uix.image import Image
 from servermacc import TestServerAdd
 from callservertest import *
 import threading
-import schedule
-
+import requests
+import time 
+from emailconf import send_email
 
 
 class FunServer(Screen):
@@ -56,6 +57,9 @@ class FunServer(Screen):
                 break
 
     def change_status(self, instance):
+
+        stop_event.clear()
+
         # Cambiamos el estado y actualizamos el texto del botón
         if self.status == "inactivo":
             self.status = "activo"
@@ -67,9 +71,7 @@ class FunServer(Screen):
                     t = threading.Thread(target=testServerCAll, args=(self.test_server_add.servers,))
                     t.start()
 
-            else:
-                stop_thread_execution()
-            
+
         else:
             self.status = "inactivo"
             self.status_button.text = "Inactivo"
@@ -78,3 +80,35 @@ class FunServer(Screen):
             stop_thread_execution()
 
 #####################################################################################
+
+
+
+stop_event = threading.Event()
+
+def testServerCAll(getlist):
+        while True:
+            for url in getlist:
+                start_time = time.time()
+            
+                try:
+                    response = requests.head(url, verify=False, timeout=10)
+                    if response.status_code == 200:
+                        pass
+                    else:
+                        end_time = time.time()
+                        result = f"Fallo de solicitud a {url}. Código de estado: {response.status_code}\nLa solicitud tardó: {end_time - start_time} segundos en completarse\n\n"
+                        send_email(result)
+                except requests.exceptions.Timeout:
+                    result = f"Timeout de conexión con {url}\n\n"
+                    send_email(result)
+                except requests.exceptions.RequestException as e:
+                    result = f"Error de conexión con {url}: {e}\n\n"
+                
+                    send_email(result)
+
+            if stop_event.is_set():
+                break
+
+def stop_thread_execution():
+    stop_event.set()
+    
