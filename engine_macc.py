@@ -13,12 +13,15 @@ class WelcomeScreen(Screen):
 
         # Creamos los widgets de la pantalla de bienvenida
         welcome_label = Label(text="Bienvenido al TEST MACC SERVER", font_size=24, halign="center")
+        welcome_label2 = Label(text="Created by: Miguel Cardona", font_size=24, halign="center")
+
         start_button = Button(text="Comenzar", font_size=20, size_hint_y=None, height=50)
         start_button.bind(on_press=self.change_screen)
 
         # Creamos un layout vertical para los widgets
         layout = BoxLayout(orientation="vertical", padding=50, spacing=20)
         layout.add_widget(welcome_label)
+        layout.add_widget(welcome_label2)
         layout.add_widget(start_button)
 
         # Agregamos el layout a la pantalla de bienvenida

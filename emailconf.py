@@ -4,9 +4,9 @@ from email.mime.multipart import MIMEMultipart
 
 def send_email(text):
     # Configurar los detalles del correo electrónico
-    sender_email = "#"
-    sender_password = "#"
-    receiver_email = "#"
+    sender_email = "#" #EMAIL HERE
+    sender_password = "#" #CLAVE DE APP O PASSWORD
+    receiver_email = "#" #EMAIL PARA RECIBIR 
 
     message = MIMEMultipart()
     message["From"] = sender_email
